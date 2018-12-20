@@ -25,19 +25,41 @@ log_debug "Run at $DATE $TIME"
 if [[ "$period" == "False" ]]; then period="0days";fi
 DATE_LIMIT="$(date +"%s" -d $period)"
 
+srcs=()
+searches=()
+collections=()
 while echo $1 | grep -q ^-; do
   case "$1" in
     -h|--help) usage; exit 0;;
     --test) test="1";;
     --no-open) noopen="1";;
-    --src) source="$2"; shift;;
     --opt) option="$2"; shift;;
-    --search) search="$2"; shift;;
-    --collection) collection="$2"; shift;;
+    --fct) wp_fct="$2"; shift;;
+    --src) srcs+=("$2"); shift;;
+    --search) searches+=("$2"); shift;;
+    --collection) collections+=("$2"); shift;;
     *) echo "Bad argument"; usage; exit 0;;
   esac
   shift
 done
+
+if [[ -n "$srcs" ]]; then sources=("$srcs"); fi
+
+if [[ -z "$searches" ]]; then
+    if [[ ! -f "$SEARCH_FILE" ]]; then echo "Missing .search file or --search argument"; exit 1; fi
+
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" != "#"* ]]; then searches+=("$line"); fi
+    done < "$SEARCH_FILE"
+
+fi
+
+if [[ -z "$collections" ]] && [[ -f "$COLLECTION_FILE" ]]; then
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        if [[ "$line" != "#"* ]]; then collections+=("$line"); fi
+    done < "$COLLECTION_FILE"
+
+fi
 
 main
 exit 0

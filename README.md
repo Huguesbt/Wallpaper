@@ -1,4 +1,9 @@
 # Wallpaper changer
+A linux shell script to change wallpaper randomly
+
+Run `watch -n 300 /opt/wallpaper/update.sh` to change wallpaper all 5 minutes (300 seconds)
+You could set this command as new starter application, but no cron or no systemd are available yet,
+need define a dbus to communicate with Xserver
 
 ## USAGE
 You could run this script with arguments or none
@@ -10,10 +15,12 @@ Usage:
     If no options setted, each options are random
     options available:
         --help: view this help
-        --src: source where get picture
+        --src: source where get picture; multiple arguments are available
         --opt: option to wallpaper (zoom, spanned, ...)
-        --search: search are keywords
-        --collection: if source is unsplash, --collection contains id from collection and name
+        --fct: name of function which change wallpaper if exist in script (xfce4, xfconf, gsettings)
+        --search: search are keywords; multiple arguments are available
+        --collection: if source is unsplash, --collection contains id from collection and name;
+                        multiple arguments are available
         --test: open feh to view pictures
 ```
 
@@ -134,4 +141,4 @@ This function take one argument, a list from images, one by monitor if many ( ge
 
 ## DEPENDENCIES
 
-google-images-download : https://github.com/hardikvasa/google-images-download.git
+[google-images-download](https://github.com/hardikvasa/google-images-download.git)

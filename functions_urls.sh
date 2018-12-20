@@ -20,23 +20,23 @@ get_proxy() {
     proxy_curl=""
     proxy_curl_user=""
 
-    if [[ "$PROXY" != "" ]] && [[ "$PROXY" != "False" ]]; then proxy_curl=" --proxy $PROXY"; fi
-    if [[ "$PROXYUSER" != "" ]] && [[ "$PROXYUSER" != "False" ]]; then proxy_curl_user=" --proxy-user $PROXYUSER"; fi
+    if [[ -n "$PROXY" ]] && [[ "$PROXY" != "False" ]]; then proxy_curl=" --proxy $PROXY"; fi
+    if [[ -n "$PROXYUSER" ]] && [[ "$PROXYUSER" != "False" ]]; then proxy_curl_user=" --proxy-user $PROXYUSER"; fi
 
     echo "$proxy_curl$proxy_curl_user"
 }
 
 get_image_from_google() {
-    if [[ "$search" == "" ]] || [[ "$GOOGLE_PATH" == "" ]]; then
+    if [[ -z "$search" ]] || [[ -z "$GOOGLE_PATH" ]]; then
         log_debug "$source : no search or no GOOGLE_PATH | $search $GOOGLE_PATH"
         exit 0
     fi
     sites=""
     file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/'`".txt"
 
-    if [[ "$google_size" != "" ]];then size="-s $google_size";fi
-    if [[ "$google_max_result" != "" ]];then max_result="-l $google_max_result";fi
-    if [[ "$forbidden_site" != "" ]];then
+    if [[ -n "$google_size" ]];then size="-s $google_size";fi
+    if [[ -n "$google_max_result" ]];then max_result="-l $google_max_result";fi
+    if [[ -n "$forbidden_site" ]];then
         for s in "${forbidden_site[@]}"; do
             sites="$sites -site:$s"
         done
@@ -54,7 +54,7 @@ get_image_from_google() {
         echo "${url_images[@]}" > "$file"
     fi
 
-    if [[ "$url_images" == "" ]]; then
+    if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search $size"
         exit 0
     else
@@ -65,7 +65,7 @@ get_image_from_google() {
 }
 
 get_image_from_qwant() {
-    if [[ "$search" == "" ]];then
+    if [[ -z "$search" ]];then
         log_debug "$source : no search"
         exit 0
     fi
@@ -73,8 +73,8 @@ get_image_from_qwant() {
     site="https://api.qwant.com/api/search/images"
     file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/'`".txt"
 
-    if [[ "$qwant_size" != "" ]];then size="$qwant_size";else size="all";fi
-    if [[ "$forbidden_site" != "" ]];then
+    if [[ -n "$qwant_size" ]];then size="$qwant_size";else size="all";fi
+    if [[ -n "$forbidden_site" ]];then
         for s in "${forbidden_site[@]}"; do
             sites="$sites -site:$s"
         done
@@ -103,7 +103,7 @@ get_image_from_qwant() {
         echo "${url_images[@]}" > "$file"
     fi
 
-    if [[ "$url_images" == "" ]]; then
+    if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search"
         exit 0
     else
@@ -114,21 +114,21 @@ get_image_from_qwant() {
 }
 
 get_image_from_picsum() {
-    if [[ "$width" == "" ]];then width=1024;fi
-    if [[ "$height" == "" ]];then height=768;fi
+    if [[ -z "$width" ]];then width=1024;fi
+    if [[ -z "$height" ]];then height=768;fi
 
     echo "https://picsum.photos/$width/$height/?random"
 
 }
 
 get_image_from_pixabay() {
-    if [[ "$search" == "" ]] || [[ "$pixabay_key" == "" ]];then
+    if [[ -z "$search" ]] || [[ -z "$pixabay_key" ]];then
         log_debug "$source : no search or no key | $search $pixabay_key"
         exit 0
     fi
-    if [[ "$width" == "" ]];then width=1024;fi
-    if [[ "$height" == "" ]];then height=768;fi
-    if [[ "$orientation" == "" ]];then orientation="horizontal";fi
+    if [[ -z "$width" ]];then width=1024;fi
+    if [[ -z "$height" ]];then height=768;fi
+    if [[ -z "$orientation" ]];then orientation="horizontal";fi
     site="https://pixabay.com/api/"
     file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/'`".txt"
 
@@ -164,7 +164,7 @@ get_image_from_pixabay() {
         for i in "${!url_images[@]}"; do
             url="${url_images[$i]}"
             extension="${url##*.}"
-            if [[ "$extension" == "" ]]; then extension="jpg"; fi
+            if [[ -z "$extension" ]]; then extension="jpg"; fi
 
             image_name="${id_images[$i]}.$extension"
             path_img=`download_picture "$url" "$image_name"`
@@ -173,7 +173,7 @@ get_image_from_pixabay() {
         done
     fi
 
-    if [[ "$path_images" == "" ]]; then
+    if [[ -z "$path_images" ]]; then
         log_debug "$source : array path_images empty $search $width $height $orientation"
         exit 0
     else
@@ -184,7 +184,7 @@ get_image_from_pixabay() {
 }
 
 get_image_from_pexels() {
-    if [[ "$search" == "" ]];then
+    if [[ -z "$search" ]];then
         log_debug "$source : no search"
         exit 0
     fi
@@ -209,7 +209,7 @@ get_image_from_pexels() {
         echo "${url_images[@]}" > "$file"
     fi
 
-    if [[ "$url_images" == "" ]]; then
+    if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search"
         exit 0
     else
@@ -220,10 +220,10 @@ get_image_from_pexels() {
 }
 
 get_image_from_unsplash() {
-    if [[ "$search" != "" ]];then
+    if [[ -n "$search" ]];then
         site="https://unsplash.com/search/photos/$search"
         file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/'`".txt"
-    elif [[  "$collection" != "" ]]; then
+    elif [[ -n "$collection" ]]; then
         site="https://unsplash.com/collections/$collection"
         file="$folder_path/logs/$source-"`echo "$collection" | sed 's/\//-/'`".txt"
     else
@@ -249,7 +249,7 @@ get_image_from_unsplash() {
         echo "${url_images[@]}" > "$file"
     fi
 
-    if [[ "$url_images" == "" ]]; then
+    if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search $collection"
         exit 0
     else
@@ -263,12 +263,12 @@ get_image_from_folder() { image=`ls "$folder" | sort -R | tail -n1`; echo "$fold
 
 download_picture() {
     url_image="$1"
-    if [[ "$2" != "" ]];then image_name="$2"
+    if [[ -n "$2" ]];then image_name="$2"
     else image_name="${url_image##*/}"
     fi
     log_debug "url_image $url_image"
 
-    if [[ "$image" != "" ]] && [[ "$image" != "False" ]]; then image_name="$image-$monitor"; fi
+    if [[ -n "$image" ]] && [[ "$image" != "False" ]]; then image_name="$image-$monitor"; fi
 
     log_debug "image $image_name"
     file_path="$folder/$image_name"

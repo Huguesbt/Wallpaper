@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+re='^[0-9]+$'
 DATE=$(date +"%F")
 TIME=$(date +"%T")
 folder_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -32,6 +33,7 @@ while echo $1 | grep -q ^-; do
   case "$1" in
     -h|--help) usage; exit 0;;
     --test) test="1";;
+    --loop) loop="$2";;
     --no-open) noopen="1";;
     --opt) option="$2"; shift;;
     --fct) wp_fct="$2"; shift;;
@@ -61,5 +63,10 @@ if [[ -z "$collections" ]] && [[ -f "$COLLECTION_FILE" ]]; then
 
 fi
 
-main
+if [[ "$loop" != "" ]] && [[ $loop =~ $re ]]; then
+    echo "Function running all $loop seconds"
+    while true; do main; sleep $loop; done
+else
+    main
+fi
 exit 0

@@ -1,7 +1,7 @@
 # Wallpaper changer
 A linux shell script to change wallpaper randomly
 
-Run `watch -n 300 /opt/wallpaper/update.sh` to change wallpaper all 5 minutes (300 seconds)
+Run `/opt/wallpaper/update.sh --loop 300` to change wallpaper all 5 minutes (300 seconds)
 You could set this command as new starter application, but no cron or no systemd are available yet,
 need define a dbus to communicate with Xserver
 
@@ -15,13 +15,14 @@ Usage:
     If no options setted, each options are random
     options available:
         --help: view this help
-        --src: source where get picture; multiple arguments are available
-        --opt: option to wallpaper (zoom, spanned, ...)
-        --fct: name of function which change wallpaper if exist in script (xfce4, xfconf, gsettings)
-        --search: search are keywords; multiple arguments are available
-        --collection: if source is unsplash, --collection contains id from collection and name;
+        --loop int : run script in a loop, sleep in second between each
+        --src array : source where get picture; multiple arguments are available
+        --opt string : option to wallpaper (zoom, spanned, ...)
+        --fct string : name of function which change wallpaper if exist in script (xfce4, xfconf, gsettings)
+        --search array : search are keywords; multiple arguments are available
+        --collection array : if source is unsplash, --collection contains id from collection and name;
                         multiple arguments are available
-        --test: open feh to view pictures
+        --test bool: open feh to view pictures
 ```
 
 To run without argument, you may set `source` variable in .env file and create .search file

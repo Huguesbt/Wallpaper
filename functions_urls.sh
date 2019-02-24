@@ -259,7 +259,7 @@ get_image_from_unsplash() {
 
 }
 
-get_image_from_folder() { image=`ls "$folder" | sort -R | tail -n1`; echo "$folder/$image"; }
+get_image_from_folder() { image=`find "$folder" -type f | sort -R | tail -n1`; echo "$folder/$image"; }
 
 download_picture() {
     url_image="$1"
@@ -271,6 +271,9 @@ download_picture() {
     if [[ -n "$image" ]] && [[ "$image" != "False" ]]; then image_name="$image-$monitor"; fi
 
     log_debug "image $image_name"
+    if [[ "$source" != "" ]] && [[ "$search" != "" ]]; then
+        folder="$folder/$source/$search"
+    fi
     file_path="$folder/$image_name"
 
     log_debug "file_path $file_path"

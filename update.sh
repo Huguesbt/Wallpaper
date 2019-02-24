@@ -35,12 +35,13 @@ while echo $1 | grep -q ^-; do
     --test) test="1";;
     --loop) loop="$2";;
     --no-open) noopen="1";;
+    --folder) folder="$2"; shift;;
     --opt) option="$2"; shift;;
     --fct) wp_fct="$2"; shift;;
     --src) srcs+=("$2"); shift;;
     --search) searches+=("$2"); shift;;
     --collection) collections+=("$2"); shift;;
-    *) echo "Bad argument"; usage; exit 0;;
+    *) echo "Bad argument"; log_debug "Bad argument: $1"; usage; exit 0;;
   esac
   shift
 done
@@ -63,9 +64,14 @@ if [[ -z "$collections" ]] && [[ -f "$COLLECTION_FILE" ]]; then
 
 fi
 
-if [[ "$loop" != "" ]] && [[ $loop =~ $re ]]; then
-    echo "Function running all $loop seconds"
-    while true; do main; sleep $loop; done
+if [[ "$folder" == "" ]] || [[ ! -d "$folder" ]]; then
+    folder="/tmp"
+fi
+
+if [[ $loop =~ $re ]]; then
+    loop=$loop"s"
+    log_debug "Function running all $loop"
+    while true; do log_debug "Run at $(date +"%T")"; main; reset_vars; sleep $loop; done
 else
     main
 fi

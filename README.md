@@ -15,14 +15,13 @@ Usage:
     If no options setted, each options are random
     options available:
         --help: view this help
-        --loop int : run script in a loop, sleep in second between each
-        --src array : source where get picture; multiple arguments are available
-        --opt string : option to wallpaper (zoom, spanned, ...)
-        --fct string : name of function which change wallpaper if exist in script (xfce4, xfconf, gsettings)
-        --search array : search are keywords; multiple arguments are available
-        --collection array : if source is unsplash, --collection contains id from collection and name;
-                        multiple arguments are available
-        --test bool: open feh to view pictures
+        --loop: set in seconds time between 2 run
+        --folder: set folder where set downloaded images
+        --src: source where get picture; multiple arguments are available
+        --opt: option to wallpaper (zoom, spanned, ...)
+        --search: search are keywords; multiple arguments are available
+        --collection: if source is unsplash, --collection contains id from collection and name; multiple arguments are available
+        --test: open feh to view pictures
 ```
 
 To run without argument, you may set `source` variable in .env file and create .search file

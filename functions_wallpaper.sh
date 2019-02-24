@@ -3,14 +3,15 @@
 usage() {
         echo "Usage: "
         echo "$(basename "$0") [OPTIONS]"
-        echo "If no options setted, each options are random"
-        echo "options available:"
-        echo "--help: view this help"
-        echo "--src: source where get picture; multiple arguments are available"
-        echo "--opt: option to wallpaper (zoom, spanned, ...)"
-        echo "--search: search are keywords; multiple arguments are available"
-        echo "--collection: if source is unsplash, --collection contains id from collection and name; multiple arguments are available"
-        echo "--test: open feh to view pictures"
+        echo "    If no options setted, each options are random options available:"
+        echo "        --help: view this help"
+        echo "        --loop: set in seconds time between 2 run"
+        echo "        --folder: set folder where set downloaded images"
+        echo "        --src: source where get picture; multiple arguments are available"
+        echo "        --opt: option to wallpaper (zoom, spanned, ...)"
+        echo "        --search: search are keywords; multiple arguments are available"
+        echo "        --collection: if source is unsplash, --collection contains id from collection and name; multiple arguments are available"
+        echo "        --test: open feh to view pictures"
 }
 
 log_debug() { if [[ "$DEBUG" == "True" ]]; then echo $* >> "$LOG_FILE"; fi }
@@ -20,7 +21,6 @@ send_notif() {
         notify-send --urgency=$urgency --icon=$ICON --expire-time=$EXPIRETIME "$1"
     fi
 }
-
 
 set_wallpaper_gsettings() {
     log_debug "set_wallpaper_gsettings"
@@ -57,7 +57,7 @@ get_wallpaper() {
     i=0
 
     while [[ -z "$url_image" ]]; do
-        log_debug "Get url_image to $monitor"
+        log_debug "Get url_image to monitor $monitor"
         url_image=`get_image_from_${source}`
         i=$((i + 1))
 
@@ -99,6 +99,14 @@ get_monitors() {
 
 }
 
+reset_vars(){
+        if [[ ! -z "$source" ]]; then unset source;fi
+        if [[ ! -z "$search" ]]; then unset search;fi
+        if [[ ! -z "$collection" ]]; then unset collection;fi
+        if [[ ! -z "$monitors" ]]; then unset monitors;fi
+        if [[ ! -z "$file_path" ]]; then unset file_path;fi
+}
+
 main() {
     if [[ `check_ping` == *"FAIL"* ]]; then source="folder";
     elif [[ -z "$source" ]]; then source="${sources[$(($RANDOM % ${#sources[@]}))]}";fi
@@ -136,13 +144,9 @@ main() {
         send_notif "$source : $search $collection"
     elif [[ "$test" != 1 ]]; then
         log_debug "Empty array files_path; rerun"
-        if [[ ! -z "$source" ]]; then unset source;fi
-        if [[ ! -z "$search" ]]; then unset search;fi
-        if [[ ! -z "$collection" ]]; then unset collection;fi
-        if [[ ! -z "$monitors" ]]; then unset monitors;fi
-        if [[ ! -z "$file_path" ]]; then unset file_path;fi
+        reset_vars
+        sleep 5s
 
-        sleep 5
         main
         exit 0
     fi

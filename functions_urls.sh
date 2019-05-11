@@ -12,8 +12,6 @@ get_random_user_agent() {
 
 }
 
-get_last_date_access() { if [[ -f "$1" ]]; then echo `stat -tc "%Y" "$1" | cut -d' ' -f1`; fi; }
-
 check_ping() { echo `ping -qc1 8.8.8.8 2>&1 | awk -F'/' 'END{ print (/^rtt/? "OK "$5" ms":"FAIL") }'`; }
 
 get_proxy() {
@@ -274,6 +272,7 @@ download_picture() {
     if [[ "$source" != "" ]] && [[ "$search" != "" ]]; then
         folder="$folder/$source/$search"
     fi
+    if [[ ! -d "$folder" ]]; then mkdir -p "$folder"; fi
     file_path="$folder/$image_name"
 
     log_debug "file_path $file_path"

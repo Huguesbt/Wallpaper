@@ -6,6 +6,9 @@ TIME=$(date +"%T")
 folder_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 LOCK_FILE=".locked"
 IMPORT_FILES=(".env" "functions_others.sh" "functions_urls.sh" "functions_wallpaper.sh" )
+SEARCH_FILE="$folder_path/.search"
+COLLECTION_FILE="$folder_path/.collection"
+USER_AGENT_FILE="$folder_path/.user_agent"
 
 for file in "${IMPORT_FILES[@]}"; do
     path="$folder_path/$file"
@@ -14,18 +17,11 @@ for file in "${IMPORT_FILES[@]}"; do
     fi
 done
 
-SEARCH_FILE="$folder_path/.search"
-COLLECTION_FILE="$folder_path/.collection"
-USER_AGENT_FILE="$folder_path/.user_agent"
-
 LOG_FILE="$folder_path/logs/$DATE-$LOG_FILE"
 
 log_debug ""
 log_debug ""
 log_debug "Run at $DATE $TIME"
-
-check_only_instance
-trap exit_wallpaper EXIT HUP INT TERM
 
 if [[ "$period" == "False" ]]; then period="0days";fi
 DATE_LIMIT="$(date +"%s" -d $period)"
@@ -73,6 +69,10 @@ if [[ "$folder" == "" ]] || [[ ! -d "$folder" ]]; then
 fi
 
 if [[ $loop =~ $re ]]; then
+
+    check_only_instance
+    trap exit_wallpaper EXIT HUP INT TERM
+
     loop=$loop"s"
     log_debug "Function running all $loop"
     while true; do

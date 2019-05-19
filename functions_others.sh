@@ -37,7 +37,6 @@ reset_vars(){
 
 check_only_instance(){
     log_debug "check_only_instance"
-    log_debug "$folder_path/$LOCK_FILE"
     if [[ -f "$folder_path/$LOCK_FILE" ]]; then log_debug "Script already run; exit";exit 1;
     else touch "$folder_path/$LOCK_FILE";
     fi
@@ -45,6 +44,6 @@ check_only_instance(){
 }
 
 exit_wallpaper(){
-    log_debug "exit_wallpaper"
     if [[ -f "$folder_path/$LOCK_FILE" ]]; then log_debug "Script exit"; rm "$folder_path/$LOCK_FILE"; fi
+    exit 1;
 }

@@ -19,6 +19,8 @@ done
 
 LOG_FILE="$folder_path/logs/$DATE-$LOG_FILE"
 
+trap exit_wallpaper EXIT HUP INT TERM
+
 log_debug ""
 log_debug ""
 log_debug "Run at $DATE $TIME"
@@ -69,19 +71,12 @@ if [[ "$folder" == "" ]] || [[ ! -d "$folder" ]]; then
 fi
 
 if [[ $loop =~ $re ]]; then
-
     check_only_instance
-    trap exit_wallpaper EXIT HUP INT TERM
 
     loop=$loop"s"
     log_debug "Function running all $loop"
-    while true; do
-        log_debug "Run at $(date +"%T")"
-        main
-        reset_vars
-        log_debug "Next run in $loop seconds"
-        sleep $loop
-    done
+
+    while true; do log_debug "Run at $(date +"%T")"; main; reset_vars; sleep $loop; done
 else
     main
 fi

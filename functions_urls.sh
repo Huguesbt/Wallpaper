@@ -257,7 +257,20 @@ get_image_from_unsplash() {
 
 }
 
-get_image_from_folder() { image=`find "$folder" -type f | sort -R | tail -n1`; echo "$folder/$image"; }
+get_image_from_folder() {
+    log_debug "get_image_from_folder $folder";
+    regex_path="$folder/.*/$search/.*"
+
+    if [[ -d "$folder/$source/$search" ]]; then
+        image=`find "$folder/$source/$search" -type f | sort -R | tail -n1`;
+    elif [[ `find "$folder" -regextype posix-egrep -regex "$regex_path" -type f` != "" ]]; then
+        image=`find "$folder" -regextype posix-egrep -regex "$regex_path" -type f | sort -R | tail -n1`;
+    else
+        image=`find "$folder" -type f | sort -R | tail -n1`;
+    fi
+
+    echo "$image";
+}
 
 download_picture() {
     url_image="$1"

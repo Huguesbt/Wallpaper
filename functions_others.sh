@@ -15,15 +15,18 @@ usage() {
         echo "        --search: search are keywords; multiple arguments are available"
         echo "        --collection: if source is unsplash, --collection contains id from collection and name; multiple arguments are available"
         echo "        --test: open feh to view pictures"
+        echo "        --file: if --src or sources contain file, define file with picture"
+        echo "        --no-debug: disabled debug"
+        echo "        --no-notif: disabled notif"
 }
 
-log_debug() { if [[ "$DEBUG" == "True" ]]; then echo $* >> "$LOG_FILE"; fi }
+log_debug() { if [[ "$DEBUG" == "True" ]]; then echo "$*" >> "$LOG_FILE"; fi }
 
 get_last_date_access() { if [[ -f "$1" ]]; then echo `stat -tc "%Y" "$1" | cut -d' ' -f1`; fi; }
 
 send_notif() {
     if [[ "$NOTIF" == "True" ]]; then
-        notify-send --urgency=$urgency --icon=$ICON --expire-time=$EXPIRETIME "$1"
+        notify-send --urgency="$urgency" --icon=$ICON --expire-time=$EXPIRETIME "$1"
     fi
 }
 

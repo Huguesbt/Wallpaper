@@ -35,7 +35,7 @@ while echo $1 | grep -q ^-; do
   case "$1" in
     -h|--help) usage; exit 0;;
     --test) test="1";;
-    --loop) loop="$2";;
+    --loop) loop="$2"; shift;;
     --no-open) noopen="1";;
     --folder) folder="$2"; shift;;
     --opt) option="$2"; shift;;
@@ -44,6 +44,8 @@ while echo $1 | grep -q ^-; do
     --search) searches+=("$2"); shift;;
     --collection) collections+=("$2"); shift;;
     --file) file_list="$2"; shift;;
+    --no-debug) DEBUG="False";;
+    --no-notif) NOTIF="False";;
     *) echo "Bad argument"; log_debug "Bad argument: $1"; usage; exit 0;;
   esac
   shift

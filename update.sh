@@ -43,6 +43,7 @@ while echo $1 | grep -q ^-; do
     --src) srcs+=("$2"); shift;;
     --search) searches+=("$2"); shift;;
     --collection) collections+=("$2"); shift;;
+    --file) file_list="$2"; shift;;
     *) echo "Bad argument"; log_debug "Bad argument: $1"; usage; exit 0;;
   esac
   shift

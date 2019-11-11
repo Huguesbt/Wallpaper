@@ -272,6 +272,18 @@ get_image_from_folder() {
     echo "$image";
 }
 
+get_image_from_file() {
+    log_debug "get_image_from_file $file_list";
+    if [[ ! -f "$file_list" ]]; then echo ""; return; fi
+
+    declare -a images
+    while IFS=$'\n' read -r line_data; do
+        images+=("${line_data}")
+    done < "$file_list"
+
+    echo "${images[$RANDOM % ${#images[@]} ]}";
+}
+
 download_picture() {
     url_image="$1"
     if [[ -n "$2" ]];then image_name="$2"

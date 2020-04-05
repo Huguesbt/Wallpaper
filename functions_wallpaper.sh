@@ -94,17 +94,17 @@ main() {
     fi
     log_debug "Source $source | Search : $search | Collection : $collection"
 
-    monitors=(`get_monitors`)
+    monitors=("$(get_monitors)")
     if [[ -n "$monitors" ]]; then
         files_path=()
-        for monitor in ${monitors[@]};do
+        for monitor in "${monitors[@]}";do
             log_debug "Monitor $monitor"
-            file_path=`get_wallpaper`
+            file_path="$(get_wallpaper)"
 
             if [[ -n "$file_path" ]]; then files_path+=("$file_path");fi
         done
     else
-        file_path=`get_wallpaper`
+        file_path="$(get_wallpaper)"
 
         if [[ -n "$file_path" ]]; then files_path=("$file_path");fi
     fi

@@ -36,8 +36,10 @@ get_image_from_google() {
     if [[ -n "$google_max_result" ]];then max_result="-l $google_max_result";fi
     if [[ -n "$forbidden_site" ]];then
         for s in "${forbidden_site[@]}"; do
-            sites="$sites -site:$s"
+            sites="$sites$s,"
         done
+        sites=${sites%.*}
+        sites="-iu $sites"
     fi
 
     last_date_access=`get_last_date_access "$file"`
@@ -46,13 +48,14 @@ get_image_from_google() {
         url_images=(`cat "$file"`)
     else
         log_debug "renew list"
-        url_images=(`python3 "$GOOGLE_PATH" -k "$search$sites" $max_result -nd -p $size -o "$HOME" -t "photo" -n | \
+        url_images=(`python3 "$GOOGLE_PATH" -k "$search" "$sites" $max_result -nd -p $size -t "photo" | \
             grep 'Image URL:' | \
             sed 's/.* \([^"]*\)/\1/'`)
         echo "${url_images[@]}" > "$file"
     fi
 
     if [[ -z "$url_images" ]]; then
+        log_debug "command : python3 $GOOGLE_PATH -k $search$sites $max_result -nd -p $size -t photo"
         log_debug "$source : array url_images empty $search $size"
         exit 0
     else

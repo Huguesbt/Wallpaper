@@ -78,6 +78,7 @@ get_monitors() {
 }
 
 main() {
+    log_debug date
     if [[ `check_ping` == *"FAIL"* ]]; then source="folder";
     elif [[ -z "$source" ]]; then source="${sources[$(($RANDOM % ${#sources[@]}))]}";fi
 

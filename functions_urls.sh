@@ -42,20 +42,22 @@ get_image_from_google() {
         sites="-iu $sites"
     fi
 
+    ggl_command=""
     last_date_access=`get_last_date_access "$file"`
     log_debug "get_last_date_access $last_date_access"
     if [[ -f "$file" ]] && [[ "$last_date_access" -ge "$DATE_LIMIT" ]]; then
         url_images=(`cat "$file"`)
     else
         log_debug "renew list"
-        url_images=(`python3 "$GOOGLE_PATH" -k "$search" "$sites" $max_result -nd -p $size -t "photo" | \
+        ggl_command="python3 \"$GOOGLE_PATH\" -k \"$search\" \"$sites\" $max_result -nd -p $size -t \"photo\""
+        url_images=(`$ggl_command | \
             grep 'Image URL:' | \
             sed 's/.* \([^"]*\)/\1/'`)
         echo "${url_images[@]}" > "$file"
     fi
 
     if [[ -z "$url_images" ]]; then
-        log_debug "command : python3 $GOOGLE_PATH -k $search$sites $max_result -nd -p $size -t photo"
+        log_debug "command : $ggl_command"
         log_debug "$source : array url_images empty $search $size"
         exit 0
     else

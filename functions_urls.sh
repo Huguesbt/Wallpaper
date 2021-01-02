@@ -108,6 +108,10 @@ get_image_from_qwant() {
 
     if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search"
+
+        if [[ -f "$file" ]]; then
+            rm "$file"
+        fi
         exit 0
     else
         log_debug "$source : array url_images ${#url_images[@]}"
@@ -178,6 +182,10 @@ get_image_from_pixabay() {
 
     if [[ -z "$path_images" ]]; then
         log_debug "$source : array path_images empty $search $width $height $orientation"
+
+        if [[ -f "$file" ]]; then
+            rm "$file"
+        fi
         exit 0
     else
         log_debug "$source : array path_images ${#path_images[@]}"
@@ -214,6 +222,10 @@ get_image_from_pexels() {
 
     if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search"
+
+        if [[ -f "$file" ]]; then
+            rm "$file"
+        fi
         exit 0
     else
         log_debug "$source : array url_images ${#url_images[@]}"
@@ -254,6 +266,10 @@ get_image_from_unsplash() {
 
     if [[ -z "$url_images" ]]; then
         log_debug "$source : array url_images empty $search $collection"
+
+        if [[ -f "$file" ]]; then
+            rm "$file"
+        fi
         exit 0
     else
         log_debug "$source : array url_images ${#url_images[@]}"

@@ -59,6 +59,10 @@ get_image_from_google() {
     if [[ -z "$url_images" ]]; then
         log_debug "command : $ggl_command"
         log_debug "$source : array url_images empty $search $size"
+
+        if [[ -f "$file" ]]; then
+            rm "$file"
+        fi
         exit 0
     else
         log_debug "$source : array url_images ${#url_images[@]}"

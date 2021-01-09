@@ -25,34 +25,34 @@ get_proxy() {
 }
 
 get_image_from_google() {
-    if [[ -z "$search" ]] || [[ -z "$GOOGLE_PATH" ]]; then
-        log_debug "$source : no search or no GOOGLE_PATH | $search $GOOGLE_PATH"
-        exit 0
-    fi
+#    if [[ -z "$search" ]] || [[ -z "$GOOGLE_PATH" ]] || [[ ! -f "$GOOGLE_PATH" ]]; then
+#        log_debug "$source : no search or no GOOGLE_PATH | $search $GOOGLE_PATH"
+#        exit 0
+#    fi
     sites=""
-    file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/'`".txt"
+    file="$folder_path/logs/$source-"`echo "$search" | sed 's/ /-/g'`".txt"
 
-    if [[ -n "$google_size" ]];then size="-s $google_size";fi
-    if [[ -n "$google_max_result" ]];then max_result="-l $google_max_result";fi
+    if [[ -n "$google_size" ]];then size="&imgSize=$google_size";fi
+    if [[ -n "$google_max_result" ]];then max_result="&num=$google_max_result";fi
     if [[ -n "$forbidden_site" ]];then
         for s in "${forbidden_site[@]}"; do
             sites="$sites$s,"
         done
-        sites=${sites%.*}
-        sites="-iu $sites"
+        sites=${sites%,*}
+        sites="-iu '$sites'"
     fi
-
-    ggl_command=""
+    search="$(echo $search | sed 's/ /+/g')"
+    log_debug "search: $search"
+    #ggl_command="python3 $GOOGLE_PATH -k '$search' $sites $max_result -nd -p $size -t photo"
+    ggl_command="curl -sSl https://customsearch.googleapis.com/customsearch/v1?q=$search&searchType=image$max_result&start=1$size&safe=off&key=$GOOGLE_API_KEY&alt=json&cx=$GOOGLE_CTX"
+    log_debug "ggl cmd $ggl_command"
     last_date_access=`get_last_date_access "$file"`
     log_debug "get_last_date_access $last_date_access"
     if [[ -f "$file" ]] && [[ "$last_date_access" -ge "$DATE_LIMIT" ]]; then
         url_images=(`cat "$file"`)
     else
         log_debug "renew list"
-        ggl_command="python3 \"$GOOGLE_PATH\" -k \"$search\" \"$sites\" $max_result -nd -p $size -t \"photo\""
-        url_images=(`$ggl_command | \
-            grep 'Image URL:' | \
-            sed 's/.* \([^"]*\)/\1/'`)
+        url_images=(`$ggl_command | jq -r '.items[].link'`)
         echo "${url_images[@]}" > "$file"
     fi
 

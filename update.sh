@@ -76,10 +76,16 @@ fi
 if [[ $loop =~ $re ]]; then
     check_only_instance
 
-    loop=$loop"s"
-    log_debug "Function running all $loop"
+    loop_s=$loop"s"
+    log_debug "Function running all $loop_s"
 
-    while true; do log_debug "Run at $(date +"%T")"; main; reset_vars; sleep $loop; done
+    while true; do
+        log_debug "Run at $(date +"%T")";
+	main;
+	reset_vars;
+	log_debug "Next run at $(date +"%T" --date=@$(($(date +%s) + $loop)))";
+	sleep $loop_s;
+    done
 else
     main
 fi

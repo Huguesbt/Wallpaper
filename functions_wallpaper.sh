@@ -111,7 +111,7 @@ main() {
 
     if [[ -n "$files_path" ]]; then
         set_wallpaper_${wp_fct} "${files_path[@]}"
-        send_notif "$source : $search $collection"
+        send_notif "$source : $(basename "$(dirname "$files_path")")"
     elif [[ "$test" != 1 ]]; then
         log_debug "Empty array files_path; rerun"
         reset_vars

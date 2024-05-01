@@ -26,6 +26,7 @@ get_last_date_access() { if [[ -f "$1" ]]; then echo `stat -tc "%Y" "$1" | cut -
 
 send_notif() {
     if [[ "$NOTIF" == "True" ]]; then
+        log_debug "$1"
         notify-send --urgency="$urgency" --icon=$ICON --expire-time=$EXPIRETIME "$1"
     fi
 }
